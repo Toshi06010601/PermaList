@@ -21,7 +21,6 @@ let items = [];
 const getItems = async () => {
   const result = await db.query("SELECT id, title, TO_CHAR(creation_date, 'DMon') AS creation_date FROM items ORDER BY id ASC");
   const data = result.rows;
-  console.log(data);
   return data;
 }
 
