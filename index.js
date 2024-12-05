@@ -16,14 +16,12 @@ db.connect();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
-let items = [
-  { id: 1, title: "Buy milk" },
-  { id: 2, title: "Finish homework" },
-];
+let items = [];
 
 const getItems = async () => {
-  const result = await db.query("SELECT * FROM items BY id ASC");
+  const result = await db.query("SELECT id, title, TO_CHAR(creation_date, 'DMon') AS creation_date FROM items ORDER BY id ASC");
   const data = result.rows;
+  console.log(data);
   return data;
 }
 
@@ -43,7 +41,7 @@ app.get("/", async (req, res) => {
 app.post("/add", async (req, res) => {
   const item = req.body.newItem;
   try {
-    await db.query("INSERT INTO items (title) VALUES($1)", [item]);
+    await db.query("INSERT INTO items (title, creation_date) VALUES($1, NOW())", [item]);
     res.redirect("/");
   } catch(err) {
     console.log(err);

@@ -13,7 +13,11 @@
         </form>
 
         <p id="title<%=item.id%>">
-          <%= item.title %>
+          <%= item.title %> 
+        </p>
+
+        <p id="createdDate<%=item.id%>">
+          (@<%= item.creation_date %>)
         </p>
 
         <form class="edit" action="/edit" method="post">
@@ -37,6 +41,7 @@
   <script>
     function handler(id) {
       document.getElementById("title" + id).setAttribute("hidden", true)
+      document.getElementById("createdDate" + id).setAttribute("hidden", true)
       document.getElementById("edit" + id).setAttribute("hidden", true)
       document.getElementById("done" + id).removeAttribute("hidden")
       document.getElementById("input" + id).removeAttribute("hidden")
