@@ -21,13 +21,13 @@ let items = [];
 const getItems = async () => {
   let listResult = await db.query("SELECT * FROM lists ORDER BY id ASC");
   const listData = listResult.rows;
-  const result = await db.query("SELECT id, title, TO_CHAR(creation_date, 'DMon') AS creation_date, list_id FROM items ORDER BY id ASC");
-  const data = result.rows;
+
+  const itemResult = await db.query("SELECT id, title, TO_CHAR(creation_date, 'DMon') AS creation_date, list_id FROM items ORDER BY id ASC");
+  const itemData = itemResult.rows;
 
   //Allocate each item to corresponding list id group
   for (let i = 0; i < listData.length; i++) {
-    listData[i].items = data.filter(item => item.list_id === listData[i].id);
-    console.log(listData[i].id);
+    listData[i].items = itemData.filter(item => item.list_id === listData[i].id);
   }
 
   return listData;
@@ -47,8 +47,9 @@ app.get("/", async (req, res) => {
 
 app.post("/add", async (req, res) => {
   const item = req.body.newItem;
+  const listId = req.body.listId;
   try {
-    await db.query("INSERT INTO items (title, creation_date) VALUES($1, NOW())", [item]);
+    await db.query("INSERT INTO items (title, creation_date, list_id) VALUES($1, NOW(), $2)", [item, listId]);
     res.redirect("/");
   } catch(err) {
     console.log(err);

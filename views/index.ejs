@@ -38,6 +38,7 @@
 
               <form class="item" action="/add" method="post">
                 <input type="text" name="newItem" placeholder="New Item" autocomplete="off" autofocus="true" />
+                <input type="hidden" name="listId" value="<%= list.id %>">
                 <button class="add" type="submit" name="list" value=<%=list.title %> >+</button>
               </form>
         </div>
