@@ -19,17 +19,25 @@ app.use(express.static("public"));
 let items = [];
 
 const getItems = async () => {
-  const result = await db.query("SELECT id, title, TO_CHAR(creation_date, 'DMon') AS creation_date FROM items ORDER BY id ASC");
+  let listResult = await db.query("SELECT * FROM lists ORDER BY id ASC");
+  const listData = listResult.rows;
+  const result = await db.query("SELECT id, title, TO_CHAR(creation_date, 'DMon') AS creation_date, list_id FROM items ORDER BY id ASC");
   const data = result.rows;
-  return data;
+
+  //Allocate each item to corresponding list id group
+  for (let i = 0; i < listData.length; i++) {
+    listData[i].items = data.filter(item => item.list_id === listData[i].id);
+    console.log(listData[i].id);
+  }
+
+  return listData;
 }
 
 app.get("/", async (req, res) => {
   try {
-    items = await getItems();
+    const lists = await getItems();
     res.render("index.ejs", {
-      listTitle: "Today",
-      listItems: items,
+      lists: lists
     });
   } catch(err) {
     console.log(err);
