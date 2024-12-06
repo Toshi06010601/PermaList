@@ -81,6 +81,30 @@ app.post("/delete", async (req, res) => {
   
 });
 
+app.post("/addList", async (req, res) => {
+  const title = req.body.newListTitle;
+  const color = req.body.color;
+  try {
+    await db.query("INSERT INTO lists (title, color) VALUES($1, $2)", [title, color]);
+    res.redirect("/");
+  } catch(err) {
+    console.log(err);
+  }
+
+});
+
+app.post("/deleteList", async (req, res) => {
+  const listId = req.body.deleteListId;
+  try {
+    await db.query("DELETE FROM items WHERE list_id = $1", [listId]);
+    await db.query("DELETE FROM lists WHERE id = $1", [listId]);
+    res.redirect("/");
+  } catch(err) {
+    console.log(err);
+  }
+  
+});
+
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
